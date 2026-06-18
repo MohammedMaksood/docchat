@@ -1,0 +1,26 @@
+# Secrets — never commit (Rule 8)
+.env
+.env.*
+!.env.example
+*.key
+service-account*.json
+credentials*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# App data / logs
+logs/
+*.log
+.streamlit/secrets.toml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
