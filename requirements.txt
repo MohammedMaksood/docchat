@@ -11,3 +11,4 @@ pymupdf>=1.24
 pytesseract>=0.3.10
 pillow>=10.0
 trafilatura>=1.8
+pysqlite3-binary; sys_platform == "linux"

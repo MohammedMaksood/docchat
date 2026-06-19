@@ -5,6 +5,16 @@ Run: `streamlit run app.py`
 """
 from __future__ import annotations
 
+# Streamlit Cloud ships an old system sqlite3; ChromaDB requires >= 3.35.
+# Swap in pysqlite3 (Linux wheel) before anything imports chromadb. No-op locally.
+try:
+    __import__("pysqlite3")
+    import sys
+
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+except ImportError:
+    pass
+
 import os
 
 import streamlit as st
