@@ -52,6 +52,13 @@ def build_engine() -> DocChat:
     )
 
 
+def _friendly(exc, fallback):
+    if "11434" in str(exc) or "Connection refused" in str(exc):
+        return ("Couldn't reach Ollama at localhost:11434. On the hosted demo, choose **Gemini** and "
+                "paste a free key — Ollama only runs when you host the app locally.")
+    return f"{fallback}: {exc}"
+
+
 with st.sidebar:
     st.header("Settings")
     provider = st.radio("Model provider", ["Gemini (cloud)", "Ollama (local)"])
@@ -83,7 +90,7 @@ with st.sidebar:
             st.session_state.messages = []
             st.success(f"Indexed {n} chunks from {len(files)} file(s) + {len(urls)} URL(s).")
         except Exception as exc:
-            st.error(f"Setup failed: {exc}")
+            st.error(_friendly(exc, "Setup failed"))
 
 engine: DocChat | None = st.session_state.get("engine")
 st.session_state.setdefault("messages", [])
@@ -120,4 +127,4 @@ if question:
                     )
                 st.session_state.messages.append({"role": "assistant", "content": result.answer})
             except Exception as exc:
-                st.error(f"Error: {exc}")
+                st.error(_friendly(exc, "Error"))
