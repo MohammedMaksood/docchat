@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field, ValidationError
 from .config import GEMINI_CHAT_MODEL, OLLAMA_CHAT_MODEL, OLLAMA_BASE_URL, OLLAMA_VISION_MODEL
 from .obs import log_call
 from .prompts import PROMPT_VERSION
+from .retry import retry_transient
 
 
 class AnswerModel(BaseModel):
@@ -52,7 +53,9 @@ class GeminiGenerator:
             [self._types.Part.from_bytes(data=im, mime_type="image/png") for im in images] + [user]
         )
         t0 = time.time()
-        resp = self._client.models.generate_content(model=self.model, contents=contents, config=cfg)
+        resp = retry_transient(
+            lambda: self._client.models.generate_content(model=self.model, contents=contents, config=cfg)
+        )
         latency = int((time.time() - t0) * 1000)
 
         um = getattr(resp, "usage_metadata", None)

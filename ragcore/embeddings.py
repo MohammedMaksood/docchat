@@ -10,6 +10,7 @@ import requests
 from .config import (
     GEMINI_EMBED_MODEL, EMBED_DIM, OLLAMA_EMBED_MODEL, OLLAMA_BASE_URL,
 )
+from .retry import retry_transient
 
 _GEMINI_BATCH = 100  # stay under per-request embedding batch limits
 
@@ -24,7 +25,9 @@ class GeminiEmbedder:
 
     def _embed(self, contents: list[str], task_type: str) -> list[list[float]]:
         cfg = self._types.EmbedContentConfig(task_type=task_type, output_dimensionality=self.dim)
-        res = self._client.models.embed_content(model=self.model, contents=contents, config=cfg)
+        res = retry_transient(
+            lambda: self._client.models.embed_content(model=self.model, contents=contents, config=cfg)
+        )
         return [e.values for e in res.embeddings]
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:

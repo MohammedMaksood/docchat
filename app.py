@@ -53,9 +53,14 @@ def build_engine() -> DocChat:
 
 
 def _friendly(exc, fallback):
-    if "11434" in str(exc) or "Connection refused" in str(exc):
+    msg = str(exc)
+    if "11434" in msg or "Connection refused" in msg:
         return ("Couldn't reach Ollama at localhost:11434. On the hosted demo, choose **Gemini** and "
                 "paste a free key — Ollama only runs when you host the app locally.")
+    if any(t in msg for t in ("503", "UNAVAILABLE", "high demand", "overloaded")):
+        return "The model is busy right now (high demand). Wait a few seconds and try again."
+    if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+        return "Hit the API rate limit. Wait a moment and try again, or use a different key."
     return f"{fallback}: {exc}"
 
 
