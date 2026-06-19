@@ -6,7 +6,7 @@ returns **schema-validated** answers, and **logs the cost/latency of every LLM c
 
 Feed it **text PDFs, scanned PDFs (auto-OCR'd), or web page URLs**. Runs on **Google Gemini** (paste your free key) or **fully local with Ollama** — no key, no data leaves your machine.
 
-<!-- Add after deploying: [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](YOUR_STREAMLIT_URL) -->
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://maksood-docchat.streamlit.app/)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 > **Demo:** run `streamlit run app.py` and add a screenshot/GIF here.
