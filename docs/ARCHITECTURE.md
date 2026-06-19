@@ -54,7 +54,7 @@ Each module has one job and a small, clear interface.
 | `ragcore/config.py` | Single source of truth: pinned model IDs, pricing, retrieval tunables | constants |
 | `ragcore/ingest.py` | PDFs (text + scanned→OCR) and web URLs → page-aware chunks | `load_pdf(...)`, `load_url(...)` |
 | `ragcore/embeddings.py` | Turn text into vectors (Gemini or Ollama), batched | `embed_documents`, `embed_query` |
-| `ragcore/retriever.py` | Hybrid BM25 + dense (ChromaDB) retrieval, fused with RRF | `HybridRetriever.index`, `.retrieve` |
+| `ragcore/retriever.py` | Hybrid BM25 + dense (ChromaDB, NumPy fallback) retrieval, fused with RRF | `HybridRetriever.index`, `.retrieve` |
 | `ragcore/prompts.py` | Versioned, injection-resistant prompt text | `SYSTEM`, `USER_TEMPLATE`, `PROMPT_VERSION` |
 | `ragcore/generation.py` | Structured, schema-validated LLM output + logging | `GeminiGenerator`, `OllamaGenerator` |
 | `ragcore/obs.py` | One structured log record per LLM call, with cost | `log_call(...)`, `estimate_cost(...)` |
@@ -132,7 +132,8 @@ sequenceDiagram
 Naive RAG does only dense (embedding) search, which misses exact terms (names, codes, acronyms).
 DocChat runs **both** retrievers and fuses them:
 
-- **Dense**: embed the query, cosine search over a **ChromaDB** collection, take the top *pool* (20).
+- **Dense**: embed the query, cosine search over a **ChromaDB** collection (or an in-memory NumPy index
+  where Chroma's native deps don't load), take the top *pool* (20).
 - **Sparse (BM25)**: classic lexical scoring over tokenized chunks, take the top *pool* (20).
 - **Reciprocal Rank Fusion (RRF)**: combine the two ranked lists by *rank position*, not raw score:
 

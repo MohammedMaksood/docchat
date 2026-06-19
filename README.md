@@ -24,8 +24,9 @@ DocChat is built the way a production RAG service should be:
   about **figures, charts, or scanned visuals**. It's a single multimodal call, **bounded to 2 pages
   per question** so the (paid) image tokens stay opt-in. Best with Gemini; local needs a capable vision
   model (`ollama pull llava`).
-- **Hybrid retrieval + RRF** — combines lexical (BM25) and semantic (embeddings in **ChromaDB**) ranking,
-  so it finds both exact-term matches and paraphrased meaning. RRF fuses the two without score-scale tuning.
+- **Hybrid retrieval + RRF** — combines lexical (BM25) and semantic (embeddings in **ChromaDB**, with an
+  in-memory NumPy fallback for constrained hosts) ranking, so it finds both exact-term matches and
+  paraphrased meaning. RRF fuses the two without score-scale tuning.
 - **Grounded, cited answers** — every answer cites the source blocks (file + page); if the context
   doesn't contain the answer, the model says so.
 - **Structured output, validated** — the model returns JSON constrained by a Pydantic schema
