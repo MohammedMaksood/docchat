@@ -5,6 +5,12 @@ Run: `streamlit run app.py`
 """
 from __future__ import annotations
 
+import os
+
+# Force pure-Python protobuf so ChromaDB's OpenTelemetry import loads on the deploy
+# runtime (avoids a protobuf C-extension vs. generated-code version clash).
+os.environ.setdefault("PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION", "python")
+
 # Streamlit Cloud ships an old system sqlite3; ChromaDB requires >= 3.35.
 # Swap in pysqlite3 (Linux wheel) before anything imports chromadb. No-op locally.
 try:
@@ -14,8 +20,6 @@ try:
     sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 except ImportError:
     pass
-
-import os
 
 import streamlit as st
 from dotenv import load_dotenv
