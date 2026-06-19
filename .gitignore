@@ -24,3 +24,7 @@ logs/
 Thumbs.db
 .idea/
 .vscode/
+
+# Personal notes (interview prep — not for the public repo)
+PROJECT_NOTES.docx
+PROJECT_NOTES.pdf
